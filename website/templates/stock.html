@@ -1,0 +1,40 @@
+{% extends "base.html" %} {% block title %}New Stock{% endblock %} {% block content
+    %}
+    <body style="background-color: #ebecec;">
+        <div class="loginnewbox" style=" background-color: white;">
+            <div style="width:50% ; margin-top: 1vh; margin-bottom: 1vh; border-right:solid black;">
+                <h3 align="center" style="font-family:'Times New Roman', Times, serif ; font-size: 3vh; margin-top: 2vh;">Current Price Per Share: {{price}}</h3>
+                </br>
+                <h3 align="center" style="font-family:'Times New Roman', Times, serif ; font-size: 3vh; margin-top: 2vh;">Revenue: {{rev}}</h3>
+                </br>    
+                <h3 align="center" style="font-family:'Times New Roman', Times, serif ; font-size: 3vh; margin-top: 2vh;">Profit Last year: {{prof}}</h3>
+                </br>
+                <h3 align="center" style="font-family:'Times New Roman', Times, serif ; font-size: 3vh; margin-top: 2vh;">Market Cap: {{cap}}</h3>
+                </br>        
+                <h3 align="center" style="font-family:'Times New Roman', Times, serif ; font-size: 3vh; margin-top: 2vh;">Five Year Average Dividend: {{dividend}}</h3>      
+
+            </div>
+
+            <div class = "loginbox;" style=" width:50% ; margin-right: 0%; background-color: white; border-top-right-radius:.5vw; border-bottom-right-radius:.5vw;" >
+                <form method="POST" style="width: 90%; margin-left: 5%; margin-top: 10%; border-top-right-radius:.5vw; border-bottom-right-radius:.5vw;">
+                  <h3 align="center" style="font-family:'Times New Roman', Times, serif ; font-size: 3vh; margin-top: 2vh;">{{name}} ({{t.upper()}})</h3>
+                  <div class="form-group" style="font-family:'Times New Roman', Times, serif ; font-size: 2vh;">
+                    <label for="email">Enter number of shares for purchase</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="shares"
+                      name="shares"
+                      min = "1"
+                      placeholder="0"
+                    />
+                  </div>
+                  <br />
+                  <button type="submit" class="btn btn-primary" value = "shares" style="align-content: center; display:flex; margin-bottom: 2vh;">Buy</button>
+                </form></div>
+        </div>
+      
+    </body>
+    
+{% endblock %}
+    

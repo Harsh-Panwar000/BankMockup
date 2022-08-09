@@ -1,0 +1,94 @@
+{% extends "base.html" %} {% block title %}Portfolio{% endblock %} {% block content
+    %}
+    <body style="background-color: #ebecec;">
+      <button onclick="display_toggle()" class = "addAccountButton btn btn-secondary btn-lg btn-block" data-toggle="collapse" href="#collapseExample">Add new stock</button>
+      <div id = "collapseExample" class="collapse loginbox" style="margin-top: 2vh; background-color:white; border-color: white;box-shadow: 0px .5vh 1vh #b3b3b3;">
+        <form method="POST" action = "{{url_for('views.portfolio')}}" style="width: 80% ;">
+          <h3 align="center" style="font-family:'Times New Roman', Times, serif ; font-size: 2vw; margin-top: 2vh;">New Stock</h3>
+          <div class="form-group">
+            <label for="email">Enter the stock ticker</label>
+            <input
+              type="text"
+              class="form-control"
+              id="ticker"
+              name="ticker"
+              placeholder="GOOG, MSFT, etc."
+            />
+          </div>
+          <br />
+          <button type="submit" name = "submit" value="ticker" class="btn btn-dark" data-toggle="collapse" href="#shares" style="align-content: center; display:flex; margin-bottom: 2vh;">Search</button>
+          
+        </form>
+      </div>
+      <div class="balanceContainer">
+        {% for stock in user.stock %}
+        <div class="balanceBox" style="font-size: 3vh;">
+          <div style = "background-color:rgb(61, 61, 61); height:3vh; border-top-left-radius: .5vw;border-top-right-radius: .5vw;"></div>
+          <div style="display: flex; justify-content:start;">
+            <div class = "stocklogo" style="width:50%;"><img src="{{stock.url}}" style="width: auto;max-width: 90%; margin-left: 10%; margin-top:10%;height:auto"><img></div>
+            <div style="width: 50% ;">
+              <div style="margin-left: 2.5% ;">Name: {{stock.name}} ({{stock.ticker.upper()}}) </div>
+              <div style="margin-left: 2.5% ; font-size: 1.5vh;"> Shares Owned: {{stock.shares}} </div>
+              <div style="margin-left: 2.5% ; font-size: 1.5vh;"> Current Price: {{stock.price_current}} </div>
+              <div style="margin-left: 2.5% ;font-size: 1.5vh; "> Total Invested: ${{ stock.shares * stock.price_current}}</div>
+              <div style="margin-left: 2.5% ; font-size: 1.5vh;"> Percent Gain: {{ "{:0.2f}".format((stock.price_current - stock.price_bought) * 100 / stock.price_bought)}}%</div>
+            </div>
+          </div>
+          <button type="button" data-toggle="collapse" href="#collapseWithdraw{{stock.id}}" class="btn btn-outline-dark editChecking">Buy</button>
+          <div id = "collapseWithdraw{{stock.id}}" class="withdraw collapse" style="margin-left: 2.5% ;">
+            <form method="POST" action = "{{url_for('views.portfolio')}}" style="width: 80% ;">
+              <div class="form-group" style="font-size: 1.5vh;">
+                <label for="email">Buy Shares</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="buy"
+                  name="buy"
+                  min="1"
+                  placeholder="0"
+                />
+                <input
+                  type="hidden"
+                  class="form-control"
+                  id="id"
+                  value="{{stock.id}}"
+                  name="id"
+                />
+              </div>
+              <br />
+              <button type="submit" name = "submit" value="buy" class="btn btn-dark" style="align-content: center; display:flex; margin-bottom: 2vh;">Confirm</button>
+            </form>
+         </div>
+         <button type="button" data-toggle="collapse" href="#collapseDeposit{{stock.id}}" class="btn btn-outline-dark editChecking">Sell</button>
+          <div id = "collapseDeposit{{stock.id}}" class="deposit collapse" style="margin-left: 2.5% ;">
+            <form method="POST" action = "{{url_for('views.portfolio')}}" style="width: 80% ;">
+              <div class="form-group" style="font-size: 1.5vh;">
+                <label for="email">Sell Shares</label>
+                <input
+                  type="number"
+                  max = {{stock.shares}}
+                  class="form-control"
+                  id="sell"
+                  name="sell"
+                  
+                />
+                <input
+                  type="hidden"
+                  class="form-control"
+                  id="id"
+                  value="{{stock.id}}"
+                  name="id"
+                />
+              </div>
+              <br />
+            <button type="submit" name = "submit" value="sell" class="btn btn-dark" style="align-content: center; display:flex; margin-bottom: 2vh;">Confirm</button>
+            </form>
+          </div>
+          
+        </div>
+        {% endfor %}
+      </div>
+      
+    </body>
+    
+    {% endblock %}

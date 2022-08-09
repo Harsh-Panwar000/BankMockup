@@ -1,0 +1,99 @@
+#intro{
+    background-color:#ebecec;
+    border-radius: .5vw; 
+    text-align: center; color: rgb(19, 32, 99);
+    margin-top: 2vh;
+    font-family:'Times New Roman', Times, serif ;
+    font-size: 4vw;
+    display: flex;
+    margin-left: 15%;
+    margin-right: 15%;
+    justify-content:center ;
+}
+#login-container{
+    background-color:#ebecec;
+    border-radius: .5vw;
+    display: flex;
+    margin-left: 15%;
+    margin-right: 15%;
+    justify-content:left ;
+    height: 60vh;
+    margin-top: 15vh;
+    box-shadow: 1vh 1vh 3vh #b3b3b3;
+}
+#welcome{
+    font-family:'Times New Roman', Times, serif ;
+    font-size: 3vw;
+    display: flex;
+    justify-content: center;
+    margin-left: 8%;
+    margin-right: 8%;
+    margin-top: 15vh;
+}
+
+.loginnewbox{
+    display:flex ;
+    justify-content:start;
+    margin-top: 8%; 
+    border-radius: .5vw;
+    box-shadow: 0px 1vh 2vh #b3b3b3;
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 50%;
+}
+.loginbox{
+    border-radius: .5vw;
+    border-width: 1px;
+    margin-left: 25%;
+    margin-right: 25%;
+    border-color: black;
+    margin-top: 5vw;
+    display: flex;
+    justify-content: center;
+    border-style: solid;
+    background-color:#ebecec ;
+}
+
+.addAccountButton{
+    visibility: visible;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 2vw;
+    margin-left: 6.6%;
+    width: 86.8%;
+    margin-right: 6.6%;
+    margin-top: 1%;
+    border-radius: .5vw;
+    background-color: #373737;
+}
+
+.balanceBox{
+    width: 30%;
+    margin-left: 1.6%;
+    margin-right: 1.6%;
+    background-color: white;
+    border-radius: .5vw;
+    box-shadow: 0px .5vh 1vh #b3b3b3;
+    margin-top: 3vh;
+    height:auto;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 3vh;
+
+}
+
+.balanceContainer{
+    width: 90% ; 
+    margin-left: 5%;
+    margin-right:5%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    margin-bottom: 2vh;
+}
+
+.editChecking{
+    margin-left: 2.5%;
+    margin-bottom: 2.5%;
+    font-size: 1.5vh;
+    
+}
+
