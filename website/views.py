@@ -165,8 +165,15 @@ def stock(tick):
     prof = dict['grossProfits']
     rev = dict['totalRevenue']
     cap = dict['marketCap']
-    div = dict['fiveYearAvgDividendYield']
-    url = dict['logo_url']
+    try:
+        div = dict['fiveYearAvgDividendYield']
+    except:
+        div = "0"
+    try:
+        url = dict['logo_url']
+    except:
+        url = "https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"
+ 
     l = [curr, prof, rev, cap, div]
     p = []
     for metric in l:
