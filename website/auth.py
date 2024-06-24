@@ -11,6 +11,16 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Handles user authentication through a form submission. It retrieves the email
+    and password from the form, checks the user's password hash against the provided
+    password, and logs in the user if successful. If unsuccessful, it displays
+    error messages to the user.
+
+    Returns:
+        redirect: A function that redirects the user to a new URL.
+
+    """
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -32,12 +42,30 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
+    """
+    Is a login-restricted route that logs out the current user and redirects them
+    to the login page.
+
+    Returns:
+        redirect: A call to the `url_for` function with the argument `'auth.login'`.
+
+    """
     logout_user()
     return redirect(url_for('auth.login'))
 
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
+    """
+    Handles the sign-up process for a user account on the website. It validates
+    input fields, checks for existing accounts with the same email, generates and
+    hashes passwords, and adds the new user to the database upon successful validation.
+
+    Returns:
+        User: A newly created user object containing email, first name, last name,
+        ssn, address and password hash.
+
+    """
     if request.method == 'POST':
         email = request.form.get('email')
         first_name = request.form.get('firstName')
