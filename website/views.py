@@ -12,12 +12,35 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def bank():
+    """
+    Defines a route for the root URL of a web application, returning an HTML
+    template named "welcome.html" with a variable "user" populated with the currently
+    logged-in user's information using Flask's render_template function and
+    current_user object.
+
+    Returns:
+        Union[Response,TemplateResponse]: Rendered from a template named "welcome.html".
+        The response contains data passed to the template as keyword arguments,
+        with "user" set to the object represented by "current_user".
+
+    """
     return render_template("welcome.html", user = current_user)
 
 
 @views.route('/checking', methods=['GET', 'POST'])
 @login_required
 def checking():
+    """
+    Handles GET and POST requests for a checking account page. It allows users to
+    create new accounts, deposit and withdraw funds from existing accounts,
+    displaying a template with user data upon successful or failed operations.
+
+    Returns:
+        Union[RedirectResponse,str]: A template rendered from "checking.html" with
+        variables 'user' when GET request, or redirects to 'views.checking' after
+        processing POST requests for creating/depositing/withdrawing funds.
+
+    """
     if request.method == 'POST':
         if request.form['submit'] == 'newAcc':
             deposit = request.form.get('deposit')
@@ -59,6 +82,16 @@ def checking():
 @views.route('/savings', methods=['GET', 'POST'])
 @login_required
 def savings():               
+    """
+    Handles GET and POST requests for a savings account management page. It creates
+    new accounts, allows deposits and withdrawals, and applies interest to existing
+    accounts based on their last activity date.
+
+    Returns:
+        Template: Rendered to an HTML file called "savings.html". The template's
+        variables include the current user and today's date.
+
+    """
     if request.method == 'POST':
         if request.form['submit'] == 'newAcc':
             deposit = request.form.get('add')
@@ -103,6 +136,17 @@ def savings():
 @views.route('/portfolio', methods=['GET', 'POST'])
 @login_required
 def portfolio(): 
+    """
+    Handles GET and POST requests for a portfolio page, updating stock information
+    upon form submission, allowing users to buy or sell shares and refreshing stock
+    prices from Yahoo Finance.
+
+    Returns:
+        Union[Response,str]: A rendered template "portfolio.html" with a parameter
+        "user" set to the current_user instance, or redirects to another route if
+        the POST method is used for specific actions.
+
+    """
     if request.method == 'POST':
         if request.form['submit'] == 'ticker':
             ticker = request.form.get('ticker')
@@ -128,6 +172,17 @@ def portfolio():
 @views.route('/personal', methods=['GET', 'POST'])
 @login_required
 def personal():
+    """
+    Handles user account updates, enabling changes to email and address upon
+    successful POST requests. Password updates are also permitted but require
+    correct old password entry and a new password with at least 7 characters.
+
+    Returns:
+        str|redirect: Either a rendered HTML template for 'personal.html' containing
+        information about the logged-in user, or a redirect to the same route if
+        there are errors with the form submission.
+
+    """
     if request.method=='POST':
         newEmail = request.form.get('newEmail')
         newAddress = request.form.get('newAddress')
@@ -154,6 +209,23 @@ def personal():
 @views.route('/stock/<tick>', methods=['GET', 'POST'])
 @login_required
 def stock(tick):
+    """
+    Retrieves information about a specified stock ticker from Yahoo Finance and
+    displays it on a web page. If the user is logged in, they can also add the
+    stock to their portfolio by submitting a form with the number of shares they
+    want to buy.
+
+    Args:
+        tick (str | None): Required as it comes from the URL path where a string
+            (ticker symbol) is specified after the slash (/). It is expected to
+            represent the stock's ticker symbol.
+
+    Returns:
+        Union[RedirectResponse,TemplateResponse]: A redirect to the portfolio page
+        or a rendered template for the stock information page, based on whether a
+        POST request was made.
+
+    """
     stock = yf.Ticker(tick)
     dict = stock.info
     try: 
