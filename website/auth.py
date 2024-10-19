@@ -12,15 +12,13 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     """
-    Handles HTTP requests to the '/login' route. It  processes POST requests by
-    validating email and password, checking if a user exists, verifying the hashed
-    password, and logging the user in successfully upon validation.
+    Handles user login requests by validating email and password, checking the
+    user's password hash, and flashing error or success messages accordingly. Upon
+    successful login, it logs the user in and redirects them to the `checking` page.
 
     Returns:
-        Union[RedirectResponse,TemplateResponse]|None: Either a Redirect response
-        to the 'checking' view if login is successful or a Template response with
-        the login.html template and the current user object if request method is
-        GET.
+        Union[str,redirect_to,Response]: Either a redirect to the 'checking' view,
+        or a rendered 'login.html' template with the current user.
 
     """
     if request.method == 'POST':
@@ -45,15 +43,11 @@ def login():
 @login_required
 def logout():
     """
-    Handles user logout requests. It forces a user to log out of their account,
-    then redirects them back to the login page for further authentication attempts.
-    The `@login_required` decorator ensures that only logged-in users can access
-    this route.
+    Handles user logout by calling the `logout_user` function to end the user's
+    session and redirects the user to the login page after successful logout.
 
     Returns:
-        Response: A RedirectResponse object containing the URL to redirect to,
-        which is 'auth.login' in this case. The `redirect` method is used to perform
-        an HTTP redirect.
+        Response: Redirecting the user to the login page.
 
     """
     logout_user()
@@ -63,13 +57,12 @@ def logout():
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
     """
-    Handles HTTP requests to the `/sign-up` route, processing form submissions for
-    user sign-up. It validates user input, checks for existing email addresses,
-    and creates a new user account upon successful validation and password hashing.
+    Processes user sign-up requests by validating input data, checking for existing
+    email addresses, and creating a new user account upon successful validation.
 
     Returns:
-        Union[Redirect,TemplateResponse]: Either a redirect to `checking` URL or
-        a rendered template named "sign_up.html" with the current user as an argument.
+        Union[str,RedirectResponse]: Either a rendered HTML template of the
+        'sign_up.html' page or a redirect to the 'checking' page.
 
     """
     if request.method == 'POST':

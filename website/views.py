@@ -13,15 +13,12 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def bank():
     """
-    Defines a route for the root URL of a web application, returning an HTML
-    template named "welcome.html" with a variable "user" populated with the currently
-    logged-in user's information using Flask's render_template function and
-    current_user object.
+    Maps to the root URL '/' and renders a web page from a template named
+    "welcome.html". The rendered page displays information about the current user.
 
     Returns:
-        Union[Response,TemplateResponse]: Rendered from a template named "welcome.html".
-        The response contains data passed to the template as keyword arguments,
-        with "user" set to the object represented by "current_user".
+        str|Response: Rendered as an HTML template named "welcome.html", passing
+        the current_user object as a variable named user.
 
     """
     return render_template("welcome.html", user = current_user)
@@ -31,14 +28,14 @@ def bank():
 @login_required
 def checking():
     """
-    Handles GET and POST requests for a checking account page. It allows users to
-    create new accounts, deposit and withdraw funds from existing accounts,
-    displaying a template with user data upon successful or failed operations.
+    Handles user interactions with a checking account feature on a web application,
+    allowing users to create new accounts, withdraw funds, and deposit funds, with
+    overdraft protection and validation for valid amounts.
 
     Returns:
-        Union[RedirectResponse,str]: A template rendered from "checking.html" with
-        variables 'user' when GET request, or redirects to 'views.checking' after
-        processing POST requests for creating/depositing/withdrawing funds.
+        Union[str,Redirect]: Either a rendered template of "checking.html" with
+        the current user's information, or a redirect to the same URL after a
+        successful database operation.
 
     """
     if request.method == 'POST':
@@ -83,13 +80,13 @@ def checking():
 @login_required
 def savings():               
     """
-    Handles GET and POST requests for a savings account management page. It creates
-    new accounts, allows deposits and withdrawals, and applies interest to existing
-    accounts based on their last activity date.
+    Handles user interactions with their savings accounts. It creates a new account,
+    performs deposits and withdrawals, and applies interest to inactive accounts,
+    updating the database and rendering a template for the user's savings page.
 
     Returns:
-        Template: Rendered to an HTML file called "savings.html". The template's
-        variables include the current user and today's date.
+        Union[RedirectResponse,TemplateResponse]: Rendered as an HTML template
+        named "savings.html" with the current user and today's date passed as variables.
 
     """
     if request.method == 'POST':
@@ -137,14 +134,13 @@ def savings():
 @login_required
 def portfolio(): 
     """
-    Handles GET and POST requests for a portfolio page, updating stock information
-    upon form submission, allowing users to buy or sell shares and refreshing stock
-    prices from Yahoo Finance.
+    Handles user portfolio actions, updating stock prices and executing buy and
+    sell transactions upon form submissions, and renders the portfolio template
+    with the updated user data.
 
     Returns:
-        Union[Response,str]: A rendered template "portfolio.html" with a parameter
-        "user" set to the current_user instance, or redirects to another route if
-        the POST method is used for specific actions.
+        Union[str,Response]: Either a string redirecting to the URL for a stock
+        page or a rendered HTML template named "portfolio.html".
 
     """
     if request.method == 'POST':
@@ -173,14 +169,13 @@ def portfolio():
 @login_required
 def personal():
     """
-    Handles user account updates, enabling changes to email and address upon
-    successful POST requests. Password updates are also permitted but require
-    correct old password entry and a new password with at least 7 characters.
+    Handles user profile updates. It allows users to change their email, address,
+    and password. Password changes require the current password to be correct, and
+    the new password must be at least 7 characters long.
 
     Returns:
-        str|redirect: Either a rendered HTML template for 'personal.html' containing
-        information about the logged-in user, or a redirect to the same route if
-        there are errors with the form submission.
+        str|int: Either a redirect URL (for example, after a successful update)
+        or a rendered HTML template (for example, the initial GET request).
 
     """
     if request.method=='POST':
@@ -210,20 +205,16 @@ def personal():
 @login_required
 def stock(tick):
     """
-    Retrieves information about a specified stock ticker from Yahoo Finance and
-    displays it on a web page. If the user is logged in, they can also add the
-    stock to their portfolio by submitting a form with the number of shares they
-    want to buy.
+    Displays information about a specified stock and allows users to add the stock
+    to their portfolio upon submitting a form with the number of shares.
 
     Args:
-        tick (str | None): Required as it comes from the URL path where a string
-            (ticker symbol) is specified after the slash (/). It is expected to
-            represent the stock's ticker symbol.
+        tick (str): Extracted from the URL path using the `<tick>` syntax in the
+            `@views.route` decorator, representing a stock ticker symbol.
 
     Returns:
-        Union[RedirectResponse,TemplateResponse]: A redirect to the portfolio page
-        or a rendered template for the stock information page, based on whether a
-        POST request was made.
+        Union[str,Redirect]: Either a rendered HTML template ("stock.html") with
+        various variables, or a redirect to the portfolio page.
 
     """
     stock = yf.Ticker(tick)

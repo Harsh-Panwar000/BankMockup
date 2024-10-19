@@ -5,23 +5,20 @@ from sqlalchemy.sql import func
 
 class Note(db.Model):
     """
-    Defines a model for database storage. It represents individual notes with
-    attributes: a unique identifier (`id`), a long string data field (`data`),
-    timestamp (`date`) automatically set to current time, and foreign key referencing
-    the `user.id`. This enables linking of notes to specific users.
+    Defines a database model for storing notes. It has four attributes:
+    - `id`: a unique identifier for each note.
+    - `data`: the content of the note, with a maximum length of 10,000 characters.
+    - `date`: the timestamp when the note was created, set to the current time by
+    default.
+    - `user_id`: a foreign key referencing the `id` of the user who created the note.
 
     Attributes:
-        id (int|None): Declared as the primary key of the table. It uniquely
-            identifies each note. It auto-increments with each new note created.
-        data (str|None): 10000 characters long. It stores a string that represents
-            note data, which can be up to 10,000 characters in length.
-        date (datetime|None): Timezone-aware. It is set to the current date and
-            time by default when a new note is created, thanks to SQLAlchemy's
-            automatic execution of the func.now() function as part of the database
-            schema creation.
-        user_id (int|None): A foreign key referencing the primary key of the 'User'
-            table. It establishes a relationship between notes and users, indicating
-            which user created or owns each note.
+        id (int): Designated as the primary key of the table, uniquely identifying
+            each note.
+        data (str): Limited to a maximum length of 10,000 characters.
+        date (datetime): Indexed to the timezone, meaning the date is stored with
+            the timezone information.
+        user_id (int): A foreign key referencing the `id` of the `User` model.
 
     """
     id = db.Column(db.Integer, primary_key=True)
@@ -32,36 +29,30 @@ class Note(db.Model):
 
 class User(db.Model, UserMixin):
     """
-    Defines a database model for storing user data. It has columns for identifying
-    information, such as SSN and email, as well as personal details like name and
-    address. It also establishes relationships with three other tables: Checking,
-    Savings, and Stock.
+    Defines a database model for users, including attributes such as Social Security
+    Number, email, password, name, and address. It also establishes relationships
+    with `Checking`, `Savings`, and `Stock` models.
 
     Attributes:
-        id (int): Declared as a primary key, which uniquely identifies each record
-            in the table. It represents the unique identifier for each user.
-        ssn (str|None): 150 characters or less in length. It represents a user's
-            Social Security Number and is declared as unique to prevent duplicate
-            SSNs within the database.
-        email (str|None): 150 characters maximum long, ensuring uniqueness among
-            users due to a unique constraint applied at database level.
-        password (str|None): 150 characters long, indicating a database column to
-            store user passwords.
-        first_name (str): 150 characters long, representing a user's first name.
-            It is stored as a column in the database with a maximum length of 150
-            characters.
-        last_name (str|None): 150 characters long. It represents the last name of
-            a user and has no explicit constraints or validation applied to it.
-        address (str): 250 characters long. It is likely used to store a user's
-            physical address, but lacks any validation or formatting constraints.
-        checking (RelationshipProxy): Referenced to the 'Checking' model, indicating
-            a one-to-one relationship between the User and Checking models through
-            a foreign key.
-        savings (Savings): A relationship to the Savings model. It represents the
-            savings account associated with a user, likely defined by a foreign
-            key referencing the `id` column of the User table.
-        stock (Stock|None): Linked to a relationship with the Stock model through
-            a back-reference, indicating that each stock belongs to one user.
+        id (int): Designated as the primary key of the table, meaning it uniquely
+            identifies each record.
+        ssn (str): Indexed to ensure uniqueness among all users in the database.
+        email (str): Defined with a maximum length of 150 characters, indicating
+            that it can store email addresses of up to 150 characters. It is also
+            declared as unique, preventing duplicate email addresses for different
+            users.
+        password (str): Limited to 150 characters.
+        first_name (str): Defined within the `User` class, representing the first
+            name of a user. It has a maximum length of 150 characters.
+        last_name (str): Defined as a column in the database with a maximum length
+            of 150 characters.
+        address (str): Defined with a maximum length of 250 characters.
+        checking (Any): Established through a relationship with the `Checking`
+            model, indicating that a user can have multiple checking accounts.
+        savings (Any): Represented by a relationship with the `Savings` model,
+            indicating a connection between a user and their savings account.
+        stock (Dict[str,Stock]): Represented by a relationship with the `Stock`
+            class, indicating that a user can have multiple stock accounts.
 
     """
     id = db.Column(db.Integer, primary_key=True)
@@ -77,19 +68,19 @@ class User(db.Model, UserMixin):
 
 class Checking(db.Model):
     """
-    Defines a database model for a checking account. It has columns to store unique
-    identifiers (`id`, `balance`, and `overdraft`) and links each account to a
-    user through foreign key `user_id`.
+    Represents a checking account in a database. It has attributes for unique
+    account ID, current balance, overdraft limit, and a foreign key referencing
+    the associated user ID. This class likely inherits from a base database model,
+    allowing it to interact with the database.
 
     Attributes:
-        id (int|None): Primary key to uniquely identify each instance of the table
-            in the database.
-        balance (float): A column in a database table representing the current
-            balance of a checking account.
-        overdraft (float): Used to represent the amount by which a checking account
-            can exceed its balance without incurring fees or penalties.
-        user_id (int|None): A foreign key referencing the id column of the 'user'
-            table, indicating that this checking account belongs to a user.
+        id (int): A primary key, meaning it uniquely identifies each instance of
+            the `Checking` class in the database.
+        balance (float): Used to store the current balance of a checking account.
+        overdraft (float): Used to represent the maximum amount by which a checking
+            account can be overdrawn.
+        user_id (int): A foreign key referencing the `id` column of the `User`
+            model in the database.
 
     """
     id = db.Column(db.Integer, primary_key=True)
@@ -99,29 +90,24 @@ class Checking(db.Model):
 
 class Savings(db.Model):
     """
-    Defines a model for a savings account database table. It represents an entity
-    with attributes such as balance, interest rate, user ID, opening date, last
-    transaction date, and interest earned. These properties enable tracking of
-    savings account information over time.
+    Represents a savings account in a database, storing its attributes such as
+    balance, interest rate, user ID, opening and last update dates, and interest
+    earned.
 
     Attributes:
-        id (int|None): A primary key. It uniquely identifies each instance of the
-            Savings model. This value will be auto-generated upon creation.
-        balance (float): A column in the database table that stores the current
-            balance of a savings account. It represents the amount of money available
-            in the account.
-        interest (float): A field that stores the current rate at which interest
-            is being earned on a savings account.
-        user_id (int|None): A foreign key referencing the id attribute in the User
-            model, indicating that it represents the ID of a user associated with
-            this savings account.
-        opened (Date|None): A column that stores the date when the savings account
-            was opened by a user. It is used to keep track of the creation time
-            of each savings account instance.
-        last (date): A column representing the most recent date when some operation
-            or event occurred to the savings account.
-        interest_earned (float): A measure of the amount of interest earned on a
-            savings account, representing the total accumulated interest over time.
+        id (int): Primary key, which uniquely identifies each instance of the
+            `Savings` class in the database.
+        balance (float): Stored in the database to represent the current amount
+            of money in the savings account.
+        interest (float): Represented by a column in the database. It stores the
+            interest rate associated with the savings account.
+        user_id (int): Foreign-keyed to the `id` attribute of the `User` model in
+            the database.
+        opened (date): Used to store the date when the savings account was created.
+        last (date): Representing the date when the savings account was last
+            accessed or updated.
+        interest_earned (float): A measure of the interest earned on the savings
+            account since its opening.
 
     """
     id = db.Column(db.Integer, primary_key=True)
@@ -136,33 +122,28 @@ class Savings(db.Model):
 
 class Stock(db.Model):
     """
-    Represents a stock holding with the following attributes: unique identifier,
-    ticker symbol, purchase price, current price, number of shares owned, associated
-    user ID, URL, and name. It serves as an object to store and manage stock data
-    within a database.
+    Represents a financial stock in a database. It stores information such as the
+    stock's identifier, ticker symbol, purchase price, current price, number of
+    shares, associated user, URL, and name.
 
     Attributes:
-        id (int|None): A primary key. It uniquely identifies each record in the
-            database table associated with this model, ensuring data integrity by
-            allowing rows to be addressed individually.
-        ticker (str|None): 150 characters long at most, it represents a unique
-            identifier for each stock such as "AAPL" or "GOOG", stored uniquely
-            within the database.
-        price_bought (float): 150 digits long, representing the price at which
-            shares were initially purchased. It has no constraints beyond its data
-            type and length specifications.
-        price_current (float): 150 decimal places long. It represents the current
-            market price of a stock, capturing its value at any given time.
-        shares (int): Part of a column named shares, used to store the quantity
-            of stocks owned by a user.
-        user_id (int|None): A foreign key referencing the `id` column of the 'User'
-            table, establishing a relationship between a stock holding and its owner.
-        url (str): 400 characters long. It represents a web address associated
-            with a stock, but its specific purpose or usage in this context is
-            unclear without additional information.
-        name (str): 200 characters long, storing a string value representing the
-            official company name for a stock. It is a database column with a
-            specific maximum length.
+        id (int): Designated as the primary key of the table, uniquely identifying
+            each stock entry.
+        ticker (str): Unique, indicating that each stock in the database must have
+            a unique ticker symbol.
+        price_bought (float): Used to store the price at which the stock was
+            initially purchased.
+        price_current (float): Bounded by a maximum value of 150. It represents
+            the current market price of a stock.
+        shares (int): Represented as a column in the database with a data type of
+            `Integer`, which stores the number of shares of a particular stock
+            owned by a user.
+        user_id (int): Referenced as a foreign key to the `id` attribute of the
+            `User` model.
+        url (str): Limited to a maximum length of 400 characters. It appears to
+            store a web address associated with the stock, possibly the stock's
+            official website.
+        name (str): Limited to a maximum length of 200 characters.
 
     """
     id = db.Column(db.Integer, primary_key=True)

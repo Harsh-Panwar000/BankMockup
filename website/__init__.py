@@ -9,14 +9,14 @@ DB_NAME = "database.db"
 
 def create_app():
     """
-    Initializes a Flask application, configures it with database settings, and
-    sets up authentication and user loading functionalities. It also registers
-    blueprints for views and auth, and creates the database schema by calling
-    another function.
+    Initializes a Flask application, configures its settings, and sets up database
+    connections. It also registers blueprints for views and authentication, defines
+    a user loader for the login manager, and initializes the login manager.
 
     Returns:
-        Flask: A web application instance configured with various settings and
-        components, including database, authentication, and views.
+        Flaskapplicationinstance: An instance of the Flask application, configured
+        and initialized with various components such as database, authentication,
+        and views.
 
     """
     app = Flask(__name__)
@@ -41,17 +41,16 @@ def create_app():
     @login_manager.user_loader
     def load_user(id):
         """
-        Loads a user from the database based on their ID. It queries the `User`
-        table using SQLAlchemy's `query.get` method, passing the ID as an integer
-        and returning the corresponding user object if found.
+        Loads a user from the database based on their ID, using the `User.query.get`
+        method to retrieve the user object from the database. The `int(id)`
+        conversion ensures the ID is treated as an integer.
 
         Args:
-            id (Union[int, str]): Required to be passed by Flask-Login's login
-                manager. It represents the user ID for loading a user from the database.
+            id (str | int): Passed to the `User.query.get` method, which expects
+                an integer.
 
         Returns:
-            User|None: A user instance from database if found otherwise None
-            indicating no such user was found.
+            UserorNone: The result of the database query executed by `User.query.get(int(id))`.
 
         """
         return User.query.get(int(id))
@@ -61,15 +60,13 @@ def create_app():
 
 def create_database(app):
     """
-    Checks for the existence of a database file. If it does not exist, creates the
-    database schema using Flask-Migrate (db) and applies it to the application.
-    It then prints a success message. The function is called with an application
-    instance as an argument.
+    Checks if a database file exists. If not, it creates the database using
+    Flask-SQLAlchemy's `create_all` method and prints a success message.
 
     Args:
-        app (Flask): Required for creating the database tables. It refers to an
-            instance of a Flask application, which provides information necessary
-            for the database to be created correctly within the context of the app.
+        app (FlaskApp): Required to be passed to the `db.create_all` method. It
+            is typically the instance of the Flask application, used to bind the
+            database to the application.
 
     """
     if not path.exists('website/' + DB_NAME):
