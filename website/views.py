@@ -12,12 +12,32 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def bank():
+    """
+    Maps to the root URL '/' and renders a web page from a template named
+    "welcome.html". The rendered page displays information about the current user.
+
+    Returns:
+        str|Response: Rendered as an HTML template named "welcome.html", passing
+        the current_user object as a variable named user.
+
+    """
     return render_template("welcome.html", user = current_user)
 
 
 @views.route('/checking', methods=['GET', 'POST'])
 @login_required
 def checking():
+    """
+    Handles user interactions with a checking account feature on a web application,
+    allowing users to create new accounts, withdraw funds, and deposit funds, with
+    overdraft protection and validation for valid amounts.
+
+    Returns:
+        Union[str,Redirect]: Either a rendered template of "checking.html" with
+        the current user's information, or a redirect to the same URL after a
+        successful database operation.
+
+    """
     if request.method == 'POST':
         if request.form['submit'] == 'newAcc':
             deposit = request.form.get('deposit')
@@ -59,6 +79,16 @@ def checking():
 @views.route('/savings', methods=['GET', 'POST'])
 @login_required
 def savings():               
+    """
+    Handles user interactions with their savings accounts. It creates a new account,
+    performs deposits and withdrawals, and applies interest to inactive accounts,
+    updating the database and rendering a template for the user's savings page.
+
+    Returns:
+        Union[RedirectResponse,TemplateResponse]: Rendered as an HTML template
+        named "savings.html" with the current user and today's date passed as variables.
+
+    """
     if request.method == 'POST':
         if request.form['submit'] == 'newAcc':
             deposit = request.form.get('add')
@@ -103,6 +133,16 @@ def savings():
 @views.route('/portfolio', methods=['GET', 'POST'])
 @login_required
 def portfolio(): 
+    """
+    Handles user portfolio actions, updating stock prices and executing buy and
+    sell transactions upon form submissions, and renders the portfolio template
+    with the updated user data.
+
+    Returns:
+        Union[str,Response]: Either a string redirecting to the URL for a stock
+        page or a rendered HTML template named "portfolio.html".
+
+    """
     if request.method == 'POST':
         if request.form['submit'] == 'ticker':
             ticker = request.form.get('ticker')
@@ -128,6 +168,16 @@ def portfolio():
 @views.route('/personal', methods=['GET', 'POST'])
 @login_required
 def personal():
+    """
+    Handles user profile updates. It allows users to change their email, address,
+    and password. Password changes require the current password to be correct, and
+    the new password must be at least 7 characters long.
+
+    Returns:
+        str|int: Either a redirect URL (for example, after a successful update)
+        or a rendered HTML template (for example, the initial GET request).
+
+    """
     if request.method=='POST':
         newEmail = request.form.get('newEmail')
         newAddress = request.form.get('newAddress')
@@ -154,6 +204,19 @@ def personal():
 @views.route('/stock/<tick>', methods=['GET', 'POST'])
 @login_required
 def stock(tick):
+    """
+    Displays information about a specified stock and allows users to add the stock
+    to their portfolio upon submitting a form with the number of shares.
+
+    Args:
+        tick (str): Extracted from the URL path using the `<tick>` syntax in the
+            `@views.route` decorator, representing a stock ticker symbol.
+
+    Returns:
+        Union[str,Redirect]: Either a rendered HTML template ("stock.html") with
+        various variables, or a redirect to the portfolio page.
+
+    """
     stock = yf.Ticker(tick)
     dict = stock.info
     try: 

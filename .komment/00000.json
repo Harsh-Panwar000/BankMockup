@@ -1,0 +1,76 @@
+[
+  {
+    "name": "auth.py",
+    "path": "website/auth.py",
+    "content": {
+      "structured": {
+        "description": "a Flask blueprint for user authentication. It provides routes for logging in, logging out, and signing up new users. The code utilizes various Flask-specific packages such as Flask-Login, Flask-Security, and Flask-Werkzeug, as well as the hashlib and flask modules. The code performs tasks such as validating user input, generating password hashes using the `generate_password_hash()` function from the `flask_security` package, and committing changes to the database using the `db.session.add()` and `db.session.commit()` methods.",
+        "items": [
+          {
+            "id": "2d68fc1d-b328-acba-e54e-c257550a372b",
+            "ancestors": [],
+            "description": "Handles user authentication through a form submission. It retrieves the email and password from the form, checks the user's password hash against the provided password, and logs in the user if successful. If unsuccessful, it displays error messages to the user.",
+            "params": [],
+            "returns": {
+              "type_name": "redirect",
+              "description": "A function that redirects the user to a new URL."
+            },
+            "name": "login",
+            "location": {
+              "start": 12,
+              "insert": 14,
+              "offset": " ",
+              "indent": 4,
+              "comment": null
+            },
+            "item_type": "function",
+            "length": 18,
+            "docLength": null
+          },
+          {
+            "id": "f5192f70-51af-4694-ac4b-5859e71060d5",
+            "ancestors": [],
+            "description": "Is a login-restricted route that logs out the current user and redirects them to the login page.",
+            "params": [],
+            "returns": {
+              "type_name": "redirect",
+              "description": "A call to the `url_for` function with the argument `'auth.login'`."
+            },
+            "name": "logout",
+            "location": {
+              "start": 32,
+              "insert": 35,
+              "offset": " ",
+              "indent": 4,
+              "comment": null
+            },
+            "item_type": "function",
+            "length": 5,
+            "docLength": null
+          },
+          {
+            "id": "0bde70da-b901-00b9-0a4a-47dee9c23b36",
+            "ancestors": [],
+            "description": "Handles the sign-up process for a user account on the website. It validates input fields, checks for existing accounts with the same email, generates and hashes passwords, and adds the new user to the database upon successful validation.",
+            "params": [],
+            "returns": {
+              "type_name": "User",
+              "description": "A newly created user object containing email, first name, last name, ssn, address and password hash."
+            },
+            "name": "sign_up",
+            "location": {
+              "start": 39,
+              "insert": 41,
+              "offset": " ",
+              "indent": 4,
+              "comment": null
+            },
+            "item_type": "function",
+            "length": 32,
+            "docLength": null
+          }
+        ]
+      }
+    }
+  }
+]

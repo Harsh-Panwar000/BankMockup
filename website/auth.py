@@ -11,6 +11,16 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Handles user login requests by validating email and password, checking the
+    user's password hash, and flashing error or success messages accordingly. Upon
+    successful login, it logs the user in and redirects them to the `checking` page.
+
+    Returns:
+        Union[str,redirect_to,Response]: Either a redirect to the 'checking' view,
+        or a rendered 'login.html' template with the current user.
+
+    """
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -32,12 +42,29 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
+    """
+    Handles user logout by calling the `logout_user` function to end the user's
+    session and redirects the user to the login page after successful logout.
+
+    Returns:
+        Response: Redirecting the user to the login page.
+
+    """
     logout_user()
     return redirect(url_for('auth.login'))
 
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
+    """
+    Processes user sign-up requests by validating input data, checking for existing
+    email addresses, and creating a new user account upon successful validation.
+
+    Returns:
+        Union[str,RedirectResponse]: Either a rendered HTML template of the
+        'sign_up.html' page or a redirect to the 'checking' page.
+
+    """
     if request.method == 'POST':
         email = request.form.get('email')
         first_name = request.form.get('firstName')
